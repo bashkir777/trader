@@ -1,5 +1,6 @@
 package Scanners;
 
+import Commands.ShowTime;
 import Enums.ScansEnum;
 import Interfaces.Scans;
 import Scans.*;
@@ -20,6 +21,13 @@ public class BinanceScanner extends Thread {
     private Scans scan;
     private float nowPrice;
 
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public float getPercent() {
+        return percent;
+    }
 
     public String getTokenName() {
         return tokenName;
@@ -70,13 +78,20 @@ public class BinanceScanner extends Thread {
         }
         try {
             while (true) {
-                this.nowPrice = httpRequest(tokenName);
+                try{
+                    this.nowPrice = httpRequest(tokenName);
+                }catch (IOException e) {
+                    System.out.println("Поток монеты " + tokenName + " не получает цену на протяжении 5 секунд");
+                    System.out.println("___________________________________________________________________________");
+                }
+
                 boolean startTrade = scan.scanIteration(nowPrice);
                 scan.getQueue().put(System.currentTimeMillis(), nowPrice);
                 sb.delete(0, sb.length());
                 if (startTrade) {
-                    System.out.println("Управление передано программе-трейдеру");
-                    String path = System.getenv("pathToConduct");
+                    System.out.print("Управление передано программе-трейдеру в ");
+                    new ShowTime().run();
+                    String path = scan.getPath();
                     String price = Float.toString(nowPrice);
                     try {
                         String[] args = {"python_1", path, tokenName, price};
@@ -86,14 +101,11 @@ public class BinanceScanner extends Thread {
                     }
                     System.exit(0);
                 }
-
                 Thread.sleep(200);
             }
 
         } catch (InterruptedException e) {
             assert true;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
     }

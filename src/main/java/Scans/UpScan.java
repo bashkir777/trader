@@ -1,5 +1,6 @@
 package Scans;
 
+import Enums.ScansEnum;
 import Interfaces.Scans;
 
 import java.util.LinkedHashMap;
@@ -7,17 +8,27 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UpScan implements Scans {
+
+    private String pathToConduct = "C:\\Users\\suple\\Desktop\\machinations\\Scalping\\LongTrader.py";
     private String tokenName;
     private Map<Long, Float> queue;
     private int minutes;
     private float percent;
+    private ScansEnum type = ScansEnum.UP;
+
+    public ScansEnum getType() {
+        return type;
+    }
     public UpScan(String tokenName, float percent, int minutes){
         this.tokenName = tokenName;
         this.queue = new LinkedHashMap<>();
         this.percent = percent;
         this.minutes = minutes;
     }
-
+    @Override
+    public String getPath() {
+        return this.pathToConduct;
+    }
     public void setQueue(Map<Long, Float> queue) {
         this.queue = queue;
     }

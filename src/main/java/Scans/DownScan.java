@@ -1,16 +1,23 @@
 package Scans;
 
+import Enums.ScansEnum;
 import Interfaces.Scans;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DownScan implements Scans {
+    public String pathToConduct = "C:\\Users\\suple\\Desktop\\machinations\\Scalping\\TransactionConduct.py";
     private String tokenName;
     private Map<Long, Float> queue;
-
     private int minutes;
     private float percent;
+    private ScansEnum type = ScansEnum.DOWN;
+
+    public ScansEnum getType() {
+        return type;
+    }
+
     public DownScan(String tokenName, float percent, int minutes){
         this.tokenName = tokenName;
         this.queue = new LinkedHashMap<>();;
@@ -55,5 +62,10 @@ public class DownScan implements Scans {
     @Override
     public Map<Long, Float> getQueue() {
         return queue;
+    }
+
+    @Override
+    public String getPath() {
+        return this.pathToConduct;
     }
 }
